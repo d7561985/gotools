@@ -3,6 +3,8 @@ package cfg
 
 import (
 	"os"
+	"fmt"
+	"bufio"
 	"encoding/json"
 )
 
@@ -22,4 +24,25 @@ func LoadCfg(s string, i interface{}) error {
 	}
 
 	return nil
+}
+
+func GetFileData(file string) (string, error) {
+	f, err := os.Open(file)
+
+	if err != nil {
+		return "", fmt.Errorf("Can't open settings.json for game %q\n", file)
+	}
+
+	defer f.Close()
+
+	input := bufio.NewScanner(f)
+	var data = make([]byte, 0, 10000)
+	for input.Scan() {
+		data = append(data, input.Bytes()...)
+	}
+	if input.Err() != nil {
+		return "", fmt.Errorf("Can't open settings.json for game %q err: %q\n", file, input.Err())
+	}
+
+	return string(data), nil
 }
