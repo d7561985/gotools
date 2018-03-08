@@ -5,6 +5,7 @@ import (
 	"io"
 	"os"
 	"time"
+	"runtime/debug"
 )
 
 // Level defines current log level
@@ -100,12 +101,14 @@ func outputF(l Level, f string, v ...interface{}) {
 // Fatal message and exit 1
 func Fatal(v ...interface{}) {
 	outputI(LFatal, v...)
+	debug.PrintStack()
 	os.Exit(1)
 }
 
 // FatalF ouptputs formatted message and exit 1
 func FatalF(f string, v ...interface{}) {
 	outputF(LFatal, f, v...)
+	debug.PrintStack()
 	os.Exit(1)
 }
 
